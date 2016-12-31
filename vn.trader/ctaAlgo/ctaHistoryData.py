@@ -350,6 +350,39 @@ def loadMcCsv(fileName, dbName, symbol):
     print u'插入完毕，耗时：%s' % (time()-start)
 
 
+def loadDatayesCsv(fileName, dbName, symbol):
+    """将Multicharts导出的csv格式的历史数据插入到Mongo数据库中"""
+    import csv
+
+    start = time()
+    print u'开始读取CSV文件%s中的数据插入到%s的%s中' % (fileName, dbName, symbol)
+
+    # 锁定集合，并创建索引
+    host, port = loadMongoSetting()
+
+    client = pymongo.MongoClient(host, port)
+    collection = client[dbName][symbol]
+    collection.ensure_index([('date', pymongo.ASCENDING)], unique=True)
+
+    # 读取数据和插入到数据库
+    reader = csv.DictReader(file(fileName, 'r'))
+    for d in reader:
+        bar = CtaBarData()
+        bar.vtSymbol = symbol
+        bar.symbol = symbol
+        bar.open = float(d['openPrice'])
+        bar.high = float(d['highestPrice'])
+        bar.low = float(d['lowestPrice'])
+        bar.close = float(d['closePrice'])
+        bar.date = datetime.strptime(d['tradeDate'], '%Y-%m-%d').strftime('%Y%m%d')
+        bar.volume = d['turnoverVol']
+
+        flt = {'date': bar.date}
+        collection.update_one(flt, {'$set': bar.__dict__}, upsert=True)
+        print bar.date
+
+    print u'插入完毕，耗时：%s' % (time() - start)
+
 if __name__ == '__main__':
     ## 简单的测试脚本可以写在这里
     #from time import sleep
@@ -358,4 +391,6 @@ if __name__ == '__main__':
     #e.downloadEquityDailyBar('000001')
     
     # 这里将项目中包含的股指日内分钟线csv导入MongoDB，作者电脑耗时大约3分钟
-    loadMcCsv('IF0000_1min.csv', MINUTE_DB_NAME, 'IF0000')
+    #loadMcCsv('IF0000_1min.csv', MINUTE_DB_NAME, 'IF0000')
+    loadDatayesCsv(r'C:\chl_project\chl_trading_system\data_datayes\bank_trade_info_10to16.csv',
+                   'DAY_BANK_TRADE', 'BAN6K10TO16')
