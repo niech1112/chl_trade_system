@@ -367,15 +367,18 @@ def loadDatayesCsv(fileName, dbName, symbol):
     # 读取数据和插入到数据库
     reader = csv.DictReader(file(fileName, 'r'))
     for d in reader:
-        bar = CtaBarData()
+        bar = StockBarData()
         bar.vtSymbol = symbol
         bar.symbol = symbol
+
+        bar.secid = d['secID']
         bar.open = float(d['openPrice'])
         bar.high = float(d['highestPrice'])
         bar.low = float(d['lowestPrice'])
         bar.close = float(d['closePrice'])
         bar.date = datetime.strptime(d['tradeDate'], '%Y-%m-%d').strftime('%Y%m%d')
         bar.volume = d['turnoverVol']
+        bar.value = float(d['turnoverValue'])
 
         flt = {'date': bar.date}
         collection.update_one(flt, {'$set': bar.__dict__}, upsert=True)
