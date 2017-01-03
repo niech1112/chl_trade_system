@@ -362,7 +362,7 @@ def loadDatayesCsv(fileName, dbName, symbol):
 
     client = pymongo.MongoClient(host, port)
     collection = client[dbName][symbol]
-    collection.ensure_index([('date', pymongo.ASCENDING)], unique=True)
+    collection.ensure_index([('datetime', pymongo.ASCENDING)], unique=True)
 
     # 读取数据和插入到数据库
     reader = csv.DictReader(file(fileName, 'r'))
@@ -380,7 +380,7 @@ def loadDatayesCsv(fileName, dbName, symbol):
         bar.volume = d['turnoverVol']
         bar.value = float(d['turnoverValue'])
 
-        flt = {'date': bar.date}
+        flt = {'datetime': bar.date}
         collection.update_one(flt, {'$set': bar.__dict__}, upsert=True)
         print bar.date
 
@@ -396,4 +396,4 @@ if __name__ == '__main__':
     # 这里将项目中包含的股指日内分钟线csv导入MongoDB，作者电脑耗时大约3分钟
     #loadMcCsv('IF0000_1min.csv', MINUTE_DB_NAME, 'IF0000')
     loadDatayesCsv(r'C:\chl_project\chl_trading_system\data_datayes\bank_trade_info_10to16.csv',
-                   'DAY_BANK_TRADE', 'BAN6K10TO16')
+                   'DAY_BANK_TRADE', 'BANK10TO16')

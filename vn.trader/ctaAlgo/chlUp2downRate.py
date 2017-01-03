@@ -48,7 +48,7 @@ class Up2downRate(CtaTemplate):
         self.upDays = 0
         self.downDays = 0
         self.secId = secId
-        self.preBars =
+        self.preBars = None
 
     def getUpDownDays(self, barList, initPrice):
         high_filter = barList['highestPrice'] >= initPrice * self.beta
@@ -63,6 +63,51 @@ class Up2downRate(CtaTemplate):
             initPrice = self.preBars[-1]['closePrice'].values[0]
         self.upDays, self.downDays = self.getUpDownDays(self.preBars, initPrice)
         self.putEvent()
+
+    def onStart(self):
+        self.writeCtaLog(u'UP2DOWN策略启动')
+        self.putEvent()
+
+    def onStop(self):
+        self.writeCtaLog(u'UP2DOWN策略停止')
+        self.putEvent()
+
+    def onTick(self, tick):
+        pass
+
+    def onBar(self, bar):
+        # 计算最新的U/D比例
+
+        self.preBars = self.preBars[1:]
+        self.preBars.append(bar)
+        if self.priceType == 'C':
+            lastPrice = bar.close
+        self.upDays, self.downDays = self.getUpDownDays(self.preBars, lastPrice)
+        upDownRate = 1.0 * self.upDays / self.downDays
+
+        # 判断买卖
+        belowRate =  upDownRate < self.lowRate
+        aboveRate = upDownRate > self.highRate
+
+        if belowRate:
+            if self.pos > 0:
+                self.sell(bar.close, 1)
+        elif aboveRate:
+            if self.pos == 0:
+                self.buy(bar.close, 1)
+
+        self.putEvent()
+
+    def onOrder(self, order):
+        pass
+
+    def onTrade(self, trade):
+        pass
+
+
+
+
+
 
 
 
