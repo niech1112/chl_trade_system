@@ -12,3 +12,6 @@ from ctaDemo import DoubleEmaDemo
 
 STRATEGY_CLASS = {}
 STRATEGY_CLASS['DoubleEmaDemo'] = DoubleEmaDemo
+
+from chlUp2downRate import Up2downRate
+STRATEGY_CLASS['Up2downRate'] = Up2downRate

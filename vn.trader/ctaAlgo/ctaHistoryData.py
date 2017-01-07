@@ -350,7 +350,7 @@ def loadMcCsv(fileName, dbName, symbol):
     print u'插入完毕，耗时：%s' % (time()-start)
 
 
-def loadDatayesCsv(fileName, dbName, symbol):
+def loadDatayesCsv(fileName, dbName, symbol, secID):
     """将Multicharts导出的csv格式的历史数据插入到Mongo数据库中"""
     import csv
 
@@ -367,6 +367,8 @@ def loadDatayesCsv(fileName, dbName, symbol):
     # 读取数据和插入到数据库
     reader = csv.DictReader(file(fileName, 'r'))
     for d in reader:
+        if d['secID'] != secID:
+            continue
         bar = StockBarData()
         bar.vtSymbol = symbol
         bar.symbol = symbol
@@ -397,4 +399,4 @@ if __name__ == '__main__':
     # 这里将项目中包含的股指日内分钟线csv导入MongoDB，作者电脑耗时大约3分钟
     #loadMcCsv('IF0000_1min.csv', MINUTE_DB_NAME, 'IF0000')
     loadDatayesCsv(r'C:\chl_project\chl_trading_system\data_datayes\bank_trade_info_10to16.csv',
-                   'DAY_BANK_TRADE', 'BANK10TO16')
+                   'DAY_PUFA_TRADE', 'PUFA10TO16', '600000.XSHG')

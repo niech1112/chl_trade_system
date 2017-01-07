@@ -934,7 +934,7 @@ if __name__ == '__main__':
     engine = BacktestingEngine()
     engine.setBacktestingMode(engine.BAR_MODE)
     engine.setStartDate('20110101')
-    engine.setDatabase('DAY_BANK_TRADE', 'BANK10TO16')
+    engine.setDatabase('DAY_PUFA_TRADE', 'PUFA10TO16')
     engine.setSlippage(0.2)
     engine.setRate(0.5/10000)
     engine.setSize(100)

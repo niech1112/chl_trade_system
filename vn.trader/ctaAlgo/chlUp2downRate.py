@@ -43,11 +43,11 @@ class Up2downRate(CtaTemplate):
                'upDays',
                'downDays']
 
-    def __init__(self, ctaEngine, setting, secId):
+    def __init__(self, ctaEngine, setting):
         super(Up2downRate, self).__init__(ctaEngine, setting)
         self.upDays = 0
         self.downDays = 0
-        self.secId = secId
+        self.secId = ''
         self.preBars = None
 
     def getUpDownDays(self, barList, initPrice):
@@ -58,8 +58,9 @@ class Up2downRate(CtaTemplate):
     def onInit(self):
         self.writeCtaLog(u'UP2DOWN策略初始化')
 
-        self.preBars = self.loadStockBar(self.lookbackDays, self.secId)
+        self.preBars = self.loadBar(self.lookbackDays)
         if self.priceType == 'C':
+            print self.preBars
             initPrice = self.preBars[-1]['closePrice'].values[0]
         self.upDays, self.downDays = self.getUpDownDays(self.preBars, initPrice)
         self.putEvent()
