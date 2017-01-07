@@ -379,8 +379,9 @@ def loadDatayesCsv(fileName, dbName, symbol):
         bar.date = datetime.strptime(d['tradeDate'], '%Y-%m-%d').strftime('%Y%m%d')
         bar.volume = d['turnoverVol']
         bar.value = float(d['turnoverValue'])
+        bar.datetime = datetime.strptime(bar.date + ' 00:00:00', '%Y%m%d %H:%M:%S')
 
-        flt = {'datetime': bar.date}
+        flt = {'datetime': bar.datetime}
         collection.update_one(flt, {'$set': bar.__dict__}, upsert=True)
         print bar.date
 
