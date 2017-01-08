@@ -636,7 +636,9 @@ class BacktestingEngine(object):
         d['averageWinning'] = averageWinning
         d['averageLosing'] = averageLosing
         d['profitLossRatio'] = profitLossRatio
-        
+
+        for result in resultList:
+            print(result)
         return d
         
     #----------------------------------------------------------------------
@@ -804,6 +806,27 @@ class TradingResult(object):
         self.slippage = slippage*2*size*abs(volume)                         # 滑点成本
         self.pnl = ((self.exitPrice - self.entryPrice) * volume * size 
                     - self.commission - self.slippage)                      # 净盈亏
+
+    def __str__(self):
+        result_str = "tradeResult:\n" \
+                     "entryPrice: {}\n" \
+                     "exitPrice: {}\n" \
+                     "entryDt: {}\n" \
+                     "exitDt: {}\n" \
+                     "volume: {}\n" \
+                     "turnover: {}\n" \
+                     "commission: {}\n" \
+                     "slippage: {}\n" \
+                     "pnl: {}\n".format(self.entryPrice,
+                                        self.exitPrice,
+                                        self.entryDt,
+                                        self.exitDt,
+                                        self.volume,
+                                        self.turnover,
+                                        self.commission,
+                                        self.slippage,
+                                        self.pnl)
+        return result_str
 
 
 ########################################################################
