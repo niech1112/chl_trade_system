@@ -153,6 +153,7 @@ class CtaTemplate(object):
     #----------------------------------------------------------------------
     def loadBar(self, days):
         """读取bar数据"""
+        print days, self.barDbName, self.vtSymbol
         return self.ctaEngine.loadBar(self.barDbName, self.vtSymbol, days)
     
     #----------------------------------------------------------------------

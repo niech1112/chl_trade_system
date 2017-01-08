@@ -49,19 +49,25 @@ class Up2downRate(CtaTemplate):
         self.downDays = 0
         self.secId = ''
         self.preBars = None
+        self.barDbName = 'DAY_PUFA_TRADE'
+        self.vtSymbol = 'PUFA10TO16'
 
     def getUpDownDays(self, barList, initPrice):
-        high_filter = barList['highestPrice'] >= initPrice * self.beta
-        low_filter = barList['lowestPrice'] <= initPrice
-        return len(barList[high_filter].index), len(barList[low_filter].index)
+        upDays = 0
+        downDays = 0
+        for bar in barList:
+            if bar.high >= initPrice * self.beta:
+                upDays += 1
+            elif bar.low <= initPrice:
+                downDays += 1
+        return upDays, downDays
 
     def onInit(self):
         self.writeCtaLog(u'UP2DOWN策略初始化')
 
         self.preBars = self.loadBar(self.lookbackDays)
         if self.priceType == 'C':
-            print self.preBars
-            initPrice = self.preBars[-1]['closePrice'].values[0]
+             initPrice = self.preBars[-1].close
         self.upDays, self.downDays = self.getUpDownDays(self.preBars, initPrice)
         self.putEvent()
 
@@ -84,7 +90,7 @@ class Up2downRate(CtaTemplate):
         if self.priceType == 'C':
             lastPrice = bar.close
         self.upDays, self.downDays = self.getUpDownDays(self.preBars, lastPrice)
-        upDownRate = 1.0 * self.upDays / self.downDays
+        upDownRate = 1.0 * self.upDays / self.downDays if self.downDays != 0 else self.upDays
 
         # 判断买卖
         belowRate =  upDownRate < self.lowRate
