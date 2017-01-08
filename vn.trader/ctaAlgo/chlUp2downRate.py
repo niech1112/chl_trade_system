@@ -14,9 +14,9 @@ class Up2downRate(CtaTemplate):
     # 策略参数
     priceType = 'C'     # OHLC中的某一种价格
     beta = 1.1          # 价格浮动区间
-    highRate = 0.6667   # up/down的临界值，高于此值买入
-    lowRate = 0.3333    # up/down的临界值，低于此值卖出
-    lookbackDays = 365  # 回测区间长度
+    highRate = 1.2   # up/down的临界值，高于此值买入
+    lowRate = 0.1    # up/down的临界值，低于此值卖出
+    lookbackDays = 60  # 回测区间长度
 
     # 策略变量
     bar = None

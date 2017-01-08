@@ -194,6 +194,7 @@ class BacktestingEngine(object):
     def newBar(self, bar):
         """新的K线"""
         self.bar = bar
+        # print bar.datetime, bar.close
         self.dt = bar.datetime
         self.crossLimitOrder()      # 先撮合限价单
         self.crossStopOrder()       # 再撮合停止单
